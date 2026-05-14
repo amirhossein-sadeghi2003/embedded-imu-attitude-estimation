@@ -85,6 +85,24 @@ See:
 [docs/i2c_test.md](docs/i2c_test.md)
 
 
+
+## Raw IMU Reading
+
+The second hardware test reads raw accelerometer and gyroscope data from the MPU6050.
+
+Initial stationary readings showed:
+
+- accel_z approximately 1.01 g
+- accel_x and accel_y close to 0 g
+- gyroscope values close to zero with small bias/noise
+
+This confirms that raw IMU data streaming is working correctly.
+
+See:
+
+[docs/raw_reading.md](docs/raw_reading.md)
+
+
 ## Current Status
 
-Initial hardware bring-up is complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68. The next step is to read raw accelerometer and gyroscope data.
+Initial hardware bring-up and raw IMU reading are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68 and streamed accelerometer/gyroscope measurements over Serial. The next step is to compute roll and pitch estimates.
