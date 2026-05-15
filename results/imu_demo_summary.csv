@@ -1,0 +1,7 @@
+metric,value
+samples,126.0
+duration_s,37.996
+filtered_roll_min_deg,-34.02
+filtered_roll_max_deg,34.79
+filtered_pitch_min_deg,-90.51
+filtered_pitch_max_deg,71.58

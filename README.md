@@ -137,6 +137,31 @@ See:
 [docs/complementary_filter.md](docs/complementary_filter.md)
 
 
+
+## Serial Logging and Python Analysis
+
+The fifth project stage logs complementary-filter attitude estimates from the ESP32 over Serial and analyzes the recorded data with Python.
+
+A demo log was collected with three stages:
+
+- flat on desk
+- tilted and held still
+- slowly rotated / tilted by hand
+
+The cleaned dataset contains 126 samples over approximately 38 seconds.
+
+Generated outputs include:
+
+- roll estimation comparison plot
+- pitch estimation comparison plot
+- corrected gyroscope measurement plot
+- IMU demo summary CSV
+
+See:
+
+[docs/imu_logging_analysis.md](docs/imu_logging_analysis.md)
+
+
 ## Current Status
 
-Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, and complementary filtering are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, computed board orientation from accelerometer data, and combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration. The next step is to log IMU attitude data and analyze it with Python plots.
+Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, and Python analysis are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, and generated analysis plots from real IMU logs. The next step is to improve sampling rate and prepare for live OLED attitude display.
