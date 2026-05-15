@@ -123,6 +123,20 @@ See:
 [docs/accelerometer_angles.md](docs/accelerometer_angles.md)
 
 
+
+## Complementary Filter
+
+The fourth hardware test combines accelerometer-based roll/pitch estimates with gyroscope measurements using a complementary filter.
+
+A startup gyroscope calibration step was added because the stationary gyro readings had small bias. After calibration, the corrected gyroscope values stayed close to zero when the board was still.
+
+Stationary test results showed stable filtered roll and pitch estimates. During tilted tests, the filtered pitch estimate followed the physical board orientation.
+
+See:
+
+[docs/complementary_filter.md](docs/complementary_filter.md)
+
+
 ## Current Status
 
-Initial hardware bring-up, raw IMU reading, and accelerometer-based roll/pitch estimation are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, and computed physical board orientation from accelerometer data. The next step is to combine accelerometer and gyroscope data using a complementary filter.
+Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, and complementary filtering are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, computed board orientation from accelerometer data, and combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration. The next step is to log IMU attitude data and analyze it with Python plots.
