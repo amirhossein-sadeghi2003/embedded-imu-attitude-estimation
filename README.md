@@ -103,6 +103,26 @@ See:
 [docs/raw_reading.md](docs/raw_reading.md)
 
 
+
+## Accelerometer-Based Roll/Pitch
+
+The third hardware test computes roll and pitch angles from MPU6050 accelerometer measurements.
+
+Flat-on-desk readings were close to:
+
+- roll: about -0.2 to -0.6 degrees
+- pitch: about -1.5 to -2.1 degrees
+- accel_z: about 1.01 g
+
+When the board was tilted by hand, roll changed clearly from about +44 degrees to about -44 degrees.
+
+This confirms that the ESP32 can compute physical board orientation from real IMU acceleration data.
+
+See:
+
+[docs/accelerometer_angles.md](docs/accelerometer_angles.md)
+
+
 ## Current Status
 
-Initial hardware bring-up and raw IMU reading are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68 and streamed accelerometer/gyroscope measurements over Serial. The next step is to compute roll and pitch estimates.
+Initial hardware bring-up, raw IMU reading, and accelerometer-based roll/pitch estimation are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, and computed physical board orientation from accelerometer data. The next step is to combine accelerometer and gyroscope data using a complementary filter.
