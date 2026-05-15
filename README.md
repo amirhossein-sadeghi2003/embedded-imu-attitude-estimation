@@ -60,13 +60,30 @@ Initial ESP32 to MPU6050 wiring:
 
 embedded-imu-attitude-estimation/
 - firmware/
+  - esp32_i2c_scanner/
   - esp32_mpu6050_raw_reading/
+  - esp32_mpu6050_accel_angles/
+  - esp32_mpu6050_complementary_filter/
 - docs/
+  - wiring.md
+  - i2c_test.md
+  - raw_reading.md
+  - accelerometer_angles.md
+  - complementary_filter.md
+  - imu_logging_analysis.md
 - data/
   - raw/
 - results/
+  - roll_estimation_comparison.png
+  - pitch_estimation_comparison.png
+  - corrected_gyro_measurements.png
+  - imu_demo_summary.csv
 - scripts/
+  - log_imu_demo.py
+  - clean_imu_log.py
+  - plot_imu_log.py
 - README.md
+- requirements.txt
 - .gitignore
 
 
@@ -160,6 +177,41 @@ Generated outputs include:
 See:
 
 [docs/imu_logging_analysis.md](docs/imu_logging_analysis.md)
+
+
+
+## Results and Plots
+
+The project includes Python-based analysis plots generated from real ESP32 + MPU6050 Serial logs.
+
+### Roll Estimation
+
+This plot compares accelerometer-only roll estimation with the complementary-filter roll estimate.
+
+![Roll Estimation Comparison](results/roll_estimation_comparison.png)
+
+### Pitch Estimation
+
+This plot compares accelerometer-only pitch estimation with the complementary-filter pitch estimate.
+
+![Pitch Estimation Comparison](results/pitch_estimation_comparison.png)
+
+### Corrected Gyroscope Measurements
+
+This plot shows calibrated gyroscope measurements after startup bias correction.
+
+![Corrected Gyroscope Measurements](results/corrected_gyro_measurements.png)
+
+### Demo Summary
+
+The logged demo contains:
+
+| Metric | Value |
+|---|---:|
+| Samples | 126 |
+| Duration | 38.0 s |
+| Filtered roll range | -34.0° to +34.8° |
+| Filtered pitch range | -90.5° to +71.6° |
 
 
 ## Current Status
