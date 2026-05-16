@@ -1,0 +1,10 @@
+metric,value
+samples,1909.0
+duration_s,38.160000000000366
+mean_dt_s,0.02
+estimated_sampling_rate_hz,50.0
+filtered_roll_min_deg,-43.058
+filtered_roll_max_deg,48.847
+filtered_pitch_min_deg,-67.13
+filtered_pitch_max_deg,64.134
+accel_z_mean_g,0.8511995337873233
