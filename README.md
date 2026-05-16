@@ -64,6 +64,7 @@ embedded-imu-attitude-estimation/
   - esp32_mpu6050_raw_reading/
   - esp32_mpu6050_accel_angles/
   - esp32_mpu6050_complementary_filter/
+  - esp32_mpu6050_high_rate_logger/
 - docs/
   - wiring.md
   - i2c_test.md
@@ -78,10 +79,17 @@ embedded-imu-attitude-estimation/
   - pitch_estimation_comparison.png
   - corrected_gyro_measurements.png
   - imu_demo_summary.csv
+  - high_rate_roll_estimation_comparison.png
+  - high_rate_pitch_estimation_comparison.png
+  - high_rate_corrected_gyro_measurements.png
+  - high_rate_accelerometer_measurements.png
+  - high_rate_imu_demo_summary.csv
 - scripts/
   - log_imu_demo.py
   - clean_imu_log.py
   - plot_imu_log.py
+  - clean_high_rate_imu_log.py
+  - plot_high_rate_imu_log.py
 - README.md
 - requirements.txt
 - .gitignore
@@ -180,23 +188,75 @@ See:
 
 
 
+## High-Rate IMU Logging
+
+After the initial human-readable Serial demo, a separate high-rate logging firmware was added for cleaner data collection.
+
+The high-rate logger outputs CSV-formatted IMU and complementary-filter data at approximately 50 Hz. This improves the data quality compared with the earlier slow Serial demo and makes the project more suitable for engineering analysis.
+
+High-rate logging files:
+
+- firmware: `firmware/esp32_mpu6050_high_rate_logger/esp32_mpu6050_high_rate_logger.ino`
+- raw log: `data/raw/high_rate_imu_demo_log.csv`
+- cleaned CSV: `data/raw/high_rate_imu_demo_clean.csv`
+- cleaning script: `scripts/clean_high_rate_imu_log.py`
+- plotting script: `scripts/plot_high_rate_imu_log.py`
+
+High-rate demo summary:
+
+| Metric | Value |
+|---|---:|
+| Samples | 1909 |
+| Duration | 38.16 s |
+| Mean timestep | 0.020 s |
+| Estimated sampling rate | 50.0 Hz |
+| Filtered roll range | -43.1° to +48.8° |
+| Filtered pitch range | -67.1° to +64.1° |
+| Mean accel-z | 0.851 g |
+
+This stage demonstrates a practical embedded-data workflow: firmware-level sampling-rate improvement, Serial data logging, robust CSV cleaning, and Python-based visualization.
+
 ## Results and Plots
 
 The project includes Python-based analysis plots generated from real ESP32 + MPU6050 Serial logs.
 
-### Roll Estimation
+### High-Rate Roll Estimation
+
+This plot compares accelerometer-only roll estimation with the complementary-filter roll estimate using the 50 Hz logger.
+
+![High-Rate Roll Estimation Comparison](results/high_rate_roll_estimation_comparison.png)
+
+### High-Rate Pitch Estimation
+
+This plot compares accelerometer-only pitch estimation with the complementary-filter pitch estimate using the 50 Hz logger.
+
+![High-Rate Pitch Estimation Comparison](results/high_rate_pitch_estimation_comparison.png)
+
+### High-Rate Corrected Gyroscope Measurements
+
+This plot shows calibrated gyroscope measurements from the high-rate logger.
+
+![High-Rate Corrected Gyroscope Measurements](results/high_rate_corrected_gyro_measurements.png)
+
+### High-Rate Accelerometer Measurements
+
+This plot shows the raw accelerometer axes during the high-rate motion demo.
+
+![High-Rate Accelerometer Measurements](results/high_rate_accelerometer_measurements.png)
+
+### Initial Roll Estimation
 
 This plot compares accelerometer-only roll estimation with the complementary-filter roll estimate.
 
 ![Roll Estimation Comparison](results/roll_estimation_comparison.png)
 
-### Pitch Estimation
+### Initial Pitch Estimation
 
 This plot compares accelerometer-only pitch estimation with the complementary-filter pitch estimate.
 
 ![Pitch Estimation Comparison](results/pitch_estimation_comparison.png)
 
-### Corrected Gyroscope Measurements
+### Initial Corrected Gyroscope Measurements
 
 This plot shows calibrated gyroscope measurements after startup bias correction.
 
@@ -216,4 +276,4 @@ The logged demo contains:
 
 ## Current Status
 
-Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, and Python analysis are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, and generated analysis plots from real IMU logs. The next step is to improve sampling rate and prepare for live OLED attitude display.
+Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, Python analysis, and high-rate IMU logging are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, and generated analysis plots from real IMU logs. A separate 50 Hz high-rate logger was added to collect cleaner data for analysis. The next step is to prepare a live OLED roll/pitch display as a visible embedded hardware output.
