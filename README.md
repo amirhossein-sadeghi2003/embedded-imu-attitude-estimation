@@ -220,7 +220,7 @@ This stage demonstrates a practical embedded-data workflow: firmware-level sampl
 
 ## OLED Live Attitude Display
 
-A live OLED display stage was added to turn the estimator into a visible embedded hardware demo.
+A live OLED display and simple LED status indicator stage was added to turn the estimator into a visible embedded hardware demo.
 
 The OLED and MPU6050 share the same ESP32 I2C bus:
 
@@ -237,6 +237,15 @@ The OLED shows live complementary-filter attitude estimates:
 
 - `R`: filtered roll angle in degrees
 - `P`: filtered pitch angle in degrees
+- `STATUS`: threshold-based attitude state
+
+The LEDs provide quick visual feedback:
+
+| Status | Condition | LED |
+|---|---|---|
+| `LEVEL` | max tilt < 10° | Green |
+| `TILT` | 10° <= max tilt < 25° | Blue |
+| `WARNING` | max tilt >= 25° | Red |
 
 Flat-on-desk test result:
 
@@ -246,6 +255,8 @@ Flat-on-desk test result:
 | Pitch | -1.8° |
 
 Small offsets around zero are expected due to sensor bias, physical alignment, and the surface not being perfectly level.
+
+This stage demonstrates real-time embedded feedback: OLED numerical attitude display plus LED-based status indication.
 
 See:
 
