@@ -16,6 +16,10 @@
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 
+#define GREEN_LED_PIN 5
+#define BLUE_LED_PIN 18
+#define RED_LED_PIN 19
+
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 float filteredRoll = 0.0;
@@ -28,8 +32,12 @@ unsigned long previousUpdateMicros = 0;
 unsigned long previousDisplayMillis = 0;
 
 const float alpha = 0.98;
-const unsigned long updateIntervalMicros = 20000;  // 50 Hz filter update
-const unsigned long displayIntervalMillis = 100;   // 10 Hz OLED refresh
+
+// 50 Hz complementary filter update
+const unsigned long updateIntervalMicros = 20000;
+
+// 10 Hz OLED and LED status refresh
+const unsigned long displayIntervalMillis = 100;
 
 int16_t readWord(uint8_t registerAddress) {
   Wire.beginTransmission(MPU6050_ADDR);
@@ -77,6 +85,39 @@ float computeAccelPitch(float accelX, float accelY, float accelZ) {
   return atan2(-accelX, sqrt(accelY * accelY + accelZ * accelZ)) * 180.0 / PI;
 }
 
+void setStatusLEDs(bool greenOn, bool blueOn, bool redOn) {
+  digitalWrite(GREEN_LED_PIN, greenOn ? HIGH : LOW);
+  digitalWrite(BLUE_LED_PIN, blueOn ? HIGH : LOW);
+  digitalWrite(RED_LED_PIN, redOn ? HIGH : LOW);
+}
+
+void updateStatusLEDs(float rollDeg, float pitchDeg) {
+  float maxTilt = max(abs(rollDeg), abs(pitchDeg));
+
+  if (maxTilt < 10.0) {
+    // Level / stable
+    setStatusLEDs(true, false, false);
+  } else if (maxTilt < 25.0) {
+    // Moderate tilt
+    setStatusLEDs(false, true, false);
+  } else {
+    // Warning tilt
+    setStatusLEDs(false, false, true);
+  }
+}
+
+const char* getStatusText(float rollDeg, float pitchDeg) {
+  float maxTilt = max(abs(rollDeg), abs(pitchDeg));
+
+  if (maxTilt < 10.0) {
+    return "LEVEL";
+  } else if (maxTilt < 25.0) {
+    return "TILT";
+  } else {
+    return "WARNING";
+  }
+}
+
 void showMessage(const char *line1, const char *line2) {
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
@@ -98,6 +139,8 @@ void calibrateGyro() {
 
   Serial.println("Calibrating gyro. Keep sensor still.");
   showMessage("Calibrating gyro", "Keep sensor still");
+
+  setStatusLEDs(false, false, false);
 
   for (int i = 0; i < samples; i++) {
     float gyroX, gyroY;
@@ -131,30 +174,38 @@ void initializeFilterFromAccelerometer() {
 }
 
 void updateOLED(float rollDeg, float pitchDeg) {
+  const char* statusText = getStatusText(rollDeg, pitchDeg);
+
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
 
   display.setTextSize(1);
   display.setCursor(0, 0);
-  display.println("IMU Attitude Estimation");
+  display.println("IMU Attitude");
 
   display.drawLine(0, 11, 127, 11, SSD1306_WHITE);
 
   display.setTextSize(2);
-  display.setCursor(0, 18);
+
+  display.setCursor(0, 17);
   display.print("R:");
   display.print(rollDeg, 1);
 
-  display.setCursor(0, 42);
+  display.setCursor(0, 39);
   display.print("P:");
   display.print(pitchDeg, 1);
 
   display.setTextSize(1);
-  display.setCursor(86, 22);
+
+  display.setCursor(88, 21);
   display.print("deg");
 
-  display.setCursor(86, 46);
+  display.setCursor(88, 43);
   display.print("deg");
+
+  display.setCursor(0, 56);
+  display.print("STATUS: ");
+  display.print(statusText);
 
   display.display();
 }
@@ -165,8 +216,18 @@ void setup() {
 
   Wire.begin(I2C_SDA, I2C_SCL);
 
+  pinMode(GREEN_LED_PIN, OUTPUT);
+  pinMode(BLUE_LED_PIN, OUTPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
+
+  setStatusLEDs(false, false, false);
+
   if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
     Serial.println("OLED initialization failed.");
+
+    // Turn red LED on if OLED initialization fails.
+    setStatusLEDs(false, false, true);
+
     while (true) {
       delay(1000);
     }
@@ -183,7 +244,7 @@ void setup() {
   previousUpdateMicros = micros();
   previousDisplayMillis = millis();
 
-  Serial.println("time_ms,filtered_roll_deg,filtered_pitch_deg");
+  Serial.println("time_ms,filtered_roll_deg,filtered_pitch_deg,status");
 }
 
 void loop() {
@@ -217,11 +278,14 @@ void loop() {
     previousDisplayMillis = currentMillis;
 
     updateOLED(filteredRoll, filteredPitch);
+    updateStatusLEDs(filteredRoll, filteredPitch);
 
     Serial.print(currentMillis);
     Serial.print(",");
     Serial.print(filteredRoll, 2);
     Serial.print(",");
-    Serial.println(filteredPitch, 2);
+    Serial.print(filteredPitch, 2);
+    Serial.print(",");
+    Serial.println(getStatusText(filteredRoll, filteredPitch));
   }
 }
