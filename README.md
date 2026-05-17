@@ -65,6 +65,7 @@ embedded-imu-attitude-estimation/
   - esp32_mpu6050_accel_angles/
   - esp32_mpu6050_complementary_filter/
   - esp32_mpu6050_high_rate_logger/
+  - esp32_mpu6050_oled_attitude_display/
 - docs/
   - wiring.md
   - i2c_test.md
@@ -72,6 +73,7 @@ embedded-imu-attitude-estimation/
   - accelerometer_angles.md
   - complementary_filter.md
   - imu_logging_analysis.md
+  - oled_attitude_display.md
 - data/
   - raw/
 - results/
@@ -216,6 +218,39 @@ High-rate demo summary:
 
 This stage demonstrates a practical embedded-data workflow: firmware-level sampling-rate improvement, Serial data logging, robust CSV cleaning, and Python-based visualization.
 
+## OLED Live Attitude Display
+
+A live OLED display stage was added to turn the estimator into a visible embedded hardware demo.
+
+The OLED and MPU6050 share the same ESP32 I2C bus:
+
+| Device | I2C Address |
+|---|---:|
+| OLED SSD1306 display | `0x3C` |
+| MPU6050 IMU | `0x68` |
+
+The display firmware is located at:
+
+`firmware/esp32_mpu6050_oled_attitude_display/esp32_mpu6050_oled_attitude_display.ino`
+
+The OLED shows live complementary-filter attitude estimates:
+
+- `R`: filtered roll angle in degrees
+- `P`: filtered pitch angle in degrees
+
+Flat-on-desk test result:
+
+| Quantity | Value |
+|---|---:|
+| Roll | -0.1° |
+| Pitch | -1.8° |
+
+Small offsets around zero are expected due to sensor bias, physical alignment, and the surface not being perfectly level.
+
+See:
+
+[docs/oled_attitude_display.md](docs/oled_attitude_display.md)
+
 ## Results and Plots
 
 The project includes Python-based analysis plots generated from real ESP32 + MPU6050 Serial logs.
@@ -276,4 +311,4 @@ The logged demo contains:
 
 ## Current Status
 
-Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, Python analysis, and high-rate IMU logging are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68, streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, and generated analysis plots from real IMU logs. A separate 50 Hz high-rate logger was added to collect cleaner data for analysis. The next step is to prepare a live OLED roll/pitch display as a visible embedded hardware output.
+Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, Python analysis, high-rate IMU logging, and OLED live attitude display are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68 and the OLED display at I2C address 0x3C, streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, generated analysis plots from real IMU logs, and displayed live roll/pitch estimates on the OLED. The next step is to capture a short hardware demo video and optionally add a small labeled IMU motion dataset.
