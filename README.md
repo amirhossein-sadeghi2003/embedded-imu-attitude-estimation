@@ -258,6 +258,39 @@ Small offsets around zero are expected due to sensor bias, physical alignment, a
 
 This stage demonstrates real-time embedded feedback: OLED numerical attitude display plus LED-based status indication.
 
+## Hardware Demo
+
+The final embedded demo combines:
+
+- ESP32
+- MPU6050 / GY-521 IMU
+- SSD1306 I2C OLED display
+- green, blue, and red LED status indicators
+
+The OLED displays live complementary-filter roll and pitch estimates, while the LEDs provide quick threshold-based status feedback:
+
+| Status | Meaning | LED |
+|---|---|---|
+| `LEVEL` | near-level attitude | Green |
+| `TILT` | moderate tilt | Blue |
+| `WARNING` | high tilt | Red |
+
+### Demo Video
+
+[Watch the IMU OLED + LED attitude demo](docs/media/imu_oled_led_attitude_demo.mp4)
+
+### Hardware Overview
+
+![IMU OLED LED Hardware Overview](docs/media/imu_oled_led_hardware_overview.jpg)
+
+### LEVEL State
+
+![IMU LEVEL Status](docs/media/imu_level_status.jpg)
+
+### WARNING State
+
+![IMU WARNING Status](docs/media/imu_warning_status.jpg)
+
 See:
 
 [docs/oled_attitude_display.md](docs/oled_attitude_display.md)
