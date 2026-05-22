@@ -17,33 +17,34 @@ This project is part of an Intelligent Physical Systems portfolio focused on:
 
 ## Project Goal
 
-The goal is to estimate roll and pitch angles from an MPU6050 IMU connected to an ESP32.
+The goal is to estimate roll and pitch angles from an MPU6050 IMU connected to an ESP32, then turn the estimator into a visible embedded hardware demo.
 
-The project will start with raw IMU reading and then progress toward filtered attitude estimation.
+The project progressed from basic sensor bring-up to complementary-filter attitude estimation, high-rate data logging, Python analysis, OLED display output, LED status feedback, and hardware demo media.
 
-## Planned Stages
+## Completed Stages
 
 1. Read raw accelerometer and gyroscope data from MPU6050
 2. Compute roll and pitch from accelerometer measurements
 3. Study gyroscope drift and accelerometer noise
 4. Implement a complementary filter for stable roll/pitch estimation
-5. Log serial data for Python analysis
+5. Log Serial data for Python analysis
 6. Plot raw and filtered attitude estimates
-7. Add OLED live display as a hardware output
+7. Add high-rate CSV logging for cleaner engineering data
+8. Add OLED live roll/pitch display
+9. Add LED status feedback for attitude state
+10. Add hardware photos and demo video
 
 ## Hardware
 
-Initial hardware:
+Final hardware setup:
 
 - ESP32 development board
 - MPU6050 / GY-521 IMU module
+- SSD1306 I2C OLED display
+- Green, blue, and red LED status indicators
 - Breadboard
 - Jumper wires
 - USB cable
-
-Planned extension:
-
-- OLED display for live roll/pitch visualization
 
 ## Wiring
 
@@ -355,4 +356,12 @@ The logged demo contains:
 
 ## Current Status
 
-Initial hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, Python analysis, high-rate IMU logging, and OLED live attitude display are complete. The ESP32 successfully detected the MPU6050 at I2C address 0x68 and the OLED display at I2C address 0x3C, streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, generated analysis plots from real IMU logs, and displayed live roll/pitch estimates on the OLED. The next step is to capture a short hardware demo video and optionally add a small labeled IMU motion dataset.
+This project is portfolio-ready.
+
+Completed work includes hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, Python analysis, high-rate IMU logging, OLED live attitude display, LED status feedback, and hardware demo media.
+
+The ESP32 successfully detected the MPU6050 at I2C address 0x68 and the OLED display at I2C address 0x3C. It streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, generated analysis plots from real IMU logs, and displayed live roll/pitch estimates on the OLED.
+
+The final hardware demo shows live attitude estimation with OLED numerical output and LED threshold-based status feedback.
+
+Future improvements could include a labeled motion dataset, a small classification layer for attitude states, or a comparison with a Kalman filter. These are optional and are not required for the current project narrative.
