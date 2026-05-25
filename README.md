@@ -365,3 +365,9 @@ The ESP32 successfully detected the MPU6050 at I2C address 0x68 and the OLED dis
 The final hardware demo shows live attitude estimation with OLED numerical output and LED threshold-based status feedback.
 
 Future improvements could include a labeled motion dataset, a small classification layer for attitude states, or a comparison with a Kalman filter. These are optional and are not required for the current project narrative.
+
+## Visual overview
+
+The figure below summarizes the main attitude estimation outputs, including roll and pitch estimation results from the IMU logging experiments.
+
+![Attitude Estimation Visual Overview](results/attitude_estimation_visual_overview.png)
