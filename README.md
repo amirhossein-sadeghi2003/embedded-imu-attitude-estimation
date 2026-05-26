@@ -371,3 +371,9 @@ Future improvements could include a labeled motion dataset, a small classificati
 The figure below summarizes the main attitude estimation outputs, including roll and pitch estimation results from the IMU logging experiments.
 
 ![Attitude Estimation Visual Overview](results/attitude_estimation_visual_overview.png)
+
+### Attitude Body Animation
+
+The animation below visualizes the filtered roll and pitch estimates as the orientation of a simple 3D body. The static beginning of the recording is skipped so the demo starts near the first meaningful attitude change.
+
+![Attitude Body Animation](results/attitude_body_animation.gif)
