@@ -1,25 +1,32 @@
 # Embedded IMU Attitude Estimation
 
-ESP32-based attitude estimation project using an MPU6050 IMU sensor.
+I built this project to turn raw MPU6050 accelerometer and gyroscope readings into a visible roll/pitch attitude demo on an ESP32.
 
-This project estimates board orientation using real accelerometer and gyroscope data. It is designed as a practical bridge between simulation-based state estimation and embedded hardware sensing.
+The project started with basic sensor bring-up and gradually became a small embedded estimation pipeline: I2C detection, raw IMU reading, accelerometer angle calculation, complementary filtering, Serial logging, Python analysis, OLED display output, LED status feedback, and hardware demo media.
 
-## Portfolio Context
+The most useful engineering lesson was the gyroscope calibration step. The stationary gyro readings were close to zero, but not exactly zero, so the filter needed a startup bias estimate before the roll and pitch outputs became stable enough for the OLED demo.
 
-This project is part of an Intelligent Physical Systems portfolio focused on:
+Main pieces:
 
-- embedded sensing
-- real sensor data
-- inertial measurement
-- filtering and estimation
-- hardware-in-the-loop experimentation
-- robotics and aerospace-inspired orientation estimation
+- ESP32 + MPU6050 hardware bring-up
+- raw accelerometer and gyroscope reading
+- accelerometer-based roll/pitch calculation
+- complementary filter for stable attitude estimation
+- high-rate Serial logging at about 50 Hz
+- Python cleaning and plotting scripts
+- OLED live roll/pitch display
+- LED status feedback for attitude state
+- hardware photos and demo video
 
-## Project Goal
+---
 
-The goal is to estimate roll and pitch angles from an MPU6050 IMU connected to an ESP32, then turn the estimator into a visible embedded hardware demo.
+## What I built
 
-The project progressed from basic sensor bring-up to complementary-filter attitude estimation, high-rate data logging, Python analysis, OLED display output, LED status feedback, and hardware demo media.
+The goal is to estimate roll and pitch angles from an MPU6050 IMU connected to an ESP32, then show the estimator as a physical embedded demo.
+
+I used the accelerometer for gravity-based roll/pitch estimates and the gyroscope for short-term motion response. The complementary filter combines both: the gyro reacts quickly, while the accelerometer helps correct drift over time.
+
+The project progressed from basic sensor tests to a visible hardware demo with OLED and LED feedback.
 
 ## Completed Stages
 
@@ -217,7 +224,7 @@ High-rate demo summary:
 | Filtered pitch range | -67.1° to +64.1° |
 | Mean accel-z | 0.851 g |
 
-This stage demonstrates a practical embedded-data workflow: firmware-level sampling-rate improvement, Serial data logging, robust CSV cleaning, and Python-based visualization.
+This stage made the data easier to analyze because the logger moved from a slower human-readable Serial format to cleaner CSV-style output at about 50 Hz.
 
 ## OLED Live Attitude Display
 
@@ -257,7 +264,7 @@ Flat-on-desk test result:
 
 Small offsets around zero are expected due to sensor bias, physical alignment, and the surface not being perfectly level.
 
-This stage demonstrates real-time embedded feedback: OLED numerical attitude display plus LED-based status indication.
+This stage turned the estimator from a Serial-only experiment into a visible embedded demo with live OLED values and LED status feedback.
 
 ## Hardware Demo
 
