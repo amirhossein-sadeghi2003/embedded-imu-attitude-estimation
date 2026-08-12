@@ -1,8 +1,13 @@
+import argparse
 import time
 from pathlib import Path
+
 import serial
 
-PORT = "/dev/ttyUSB0"
+parser = argparse.ArgumentParser(description="Capture the complementary-filter IMU demo.")
+parser.add_argument("--port", default="/dev/ttyUSB0", help="Serial port for the ESP32")
+args = parser.parse_args()
+
 BAUD = 115200
 OUT = Path("data/raw/complementary_filter_demo_log.csv")
 
@@ -21,7 +26,7 @@ def run_stage(name, seconds):
 print("Opening serial port...")
 print("Close Arduino Serial Monitor before running this script.")
 
-with serial.Serial(PORT, BAUD, timeout=1) as ser, OUT.open("w", encoding="utf-8") as f:
+with serial.Serial(args.port, BAUD, timeout=1) as ser, OUT.open("w", encoding="utf-8") as f:
     time.sleep(2)
     ser.reset_input_buffer()
 

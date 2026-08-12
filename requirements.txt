@@ -1,2 +1,5 @@
-pandas
-matplotlib
+matplotlib==3.10.9
+numpy==2.4.4
+pandas==3.0.2
+Pillow==12.2.0
+pyserial==3.5
