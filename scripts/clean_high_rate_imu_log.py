@@ -73,17 +73,34 @@ with raw_path.open("r", encoding="utf-8", errors="ignore") as f:
 
         rows.append(values)
 
+# Drop a stray startup row if it is far from the main timestamp sequence.
+if len(rows) >= 2 and rows[1][0] - rows[0][0] > 1000:
+    rows = rows[1:]
+
+# Remove isolated corrupted timestamps while preserving real capture gaps.
+validated_rows = []
+for i, values in enumerate(rows):
+    if 0 < i < len(rows) - 1:
+        previous_time = rows[i - 1][0]
+        current_time = values[0]
+        next_time = rows[i + 1][0]
+
+        if previous_time < next_time and not (
+            previous_time < current_time < next_time
+        ):
+            continue
+
+    validated_rows.append(values)
+
+rows = validated_rows
+
 clean_rows = []
-time_s = 0.0
+start_time_ms = rows[0][0]
 
 for idx, values in enumerate(rows):
     raw_time_ms = values[0]
     dt_s = values[1]
-
-    if idx == 0:
-        time_s = 0.0
-    else:
-        time_s += dt_s
+    time_s = (raw_time_ms - start_time_ms) / 1000.0
 
     clean_rows.append(
         [
@@ -98,7 +115,7 @@ for idx, values in enumerate(rows):
 clean_path.parent.mkdir(parents=True, exist_ok=True)
 
 with clean_path.open("w", newline="", encoding="utf-8") as f:
-    writer = csv.writer(f)
+    writer = csv.writer(f, lineterminator="\n")
     writer.writerow(header)
     writer.writerows(clean_rows)
 
@@ -112,6 +129,6 @@ if clean_rows:
     mean_dt = sum(row[3] for row in clean_rows) / len(clean_rows)
     estimated_rate_hz = 1.0 / mean_dt if mean_dt > 0 else 0.0
 
-    print(f"Duration from reconstructed time: {duration_s:.3f} s")
-    print(f"Mean dt: {mean_dt:.6f} s")
-    print(f"Estimated sampling rate: {estimated_rate_hz:.2f} Hz")
+    print(f"Duration from raw timestamps: {duration_s:.3f} s")
+    print(f"Mean reported dt: {mean_dt:.6f} s")
+    print(f"Nominal update rate from reported dt: {estimated_rate_hz:.2f} Hz")

@@ -60,13 +60,17 @@ plt.tight_layout()
 plt.savefig(results_dir / "high_rate_accelerometer_measurements.png", dpi=200)
 plt.close()
 
+duration_s = time_s.iloc[-1] - time_s.iloc[0]
+mean_reported_dt_s = df["dt_s"].mean()
+
 summary = pd.DataFrame(
     {
         "metric": [
             "samples",
             "duration_s",
-            "mean_dt_s",
-            "estimated_sampling_rate_hz",
+            "mean_reported_dt_s",
+            "nominal_update_rate_hz",
+            "effective_logged_rate_hz",
             "filtered_roll_min_deg",
             "filtered_roll_max_deg",
             "filtered_pitch_min_deg",
@@ -75,9 +79,10 @@ summary = pd.DataFrame(
         ],
         "value": [
             len(df),
-            time_s.iloc[-1] - time_s.iloc[0],
-            df["dt_s"].mean(),
-            1.0 / df["dt_s"].mean(),
+            duration_s,
+            mean_reported_dt_s,
+            1.0 / mean_reported_dt_s,
+            (len(df) - 1) / duration_s,
             df["filtered_roll_deg"].min(),
             df["filtered_roll_deg"].max(),
             df["filtered_pitch_deg"].min(),
