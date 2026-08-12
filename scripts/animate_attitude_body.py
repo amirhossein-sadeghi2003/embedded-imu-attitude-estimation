@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-INPUT_CSV = ROOT / "data" / "raw" / "high_rate_imu_demo_clean.csv"
+INPUT_CSV = ROOT / "data" / "processed" / "high_rate_imu_demo_clean.csv"
 RESULTS_DIR = ROOT / "results"
 OUTPUT_GIF = RESULTS_DIR / "attitude_body_animation.gif"
 

@@ -2,13 +2,13 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-input_path = Path("data/raw/high_rate_imu_demo_clean.csv")
+input_path = Path("data/processed/high_rate_imu_demo_clean.csv")
 results_dir = Path("results")
 results_dir.mkdir(exist_ok=True)
 
 df = pd.read_csv(input_path)
 
-# Use reconstructed time from the cleaner.
+# Use timestamp-derived time from the cleaner.
 time_s = df["time_s"]
 
 plt.figure(figsize=(10, 5))

@@ -2,7 +2,7 @@ from pathlib import Path
 import csv
 
 raw_path = Path("data/raw/complementary_filter_demo_log.csv")
-clean_path = Path("data/raw/complementary_filter_demo_clean.csv")
+clean_path = Path("data/processed/complementary_filter_demo_clean.csv")
 
 header = [
     "time_ms",
@@ -38,7 +38,7 @@ with raw_path.open("r", encoding="utf-8", errors="ignore") as f:
 clean_path.parent.mkdir(parents=True, exist_ok=True)
 
 with clean_path.open("w", newline="", encoding="utf-8") as f:
-    writer = csv.writer(f)
+    writer = csv.writer(f, lineterminator="\n")
     writer.writerow(header)
     writer.writerows(rows)
 

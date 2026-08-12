@@ -2,7 +2,7 @@ from pathlib import Path
 import csv
 
 raw_path = Path("data/raw/high_rate_imu_demo_log.csv")
-clean_path = Path("data/raw/high_rate_imu_demo_clean.csv")
+clean_path = Path("data/processed/high_rate_imu_demo_clean.csv")
 
 header = [
     "sample_index",

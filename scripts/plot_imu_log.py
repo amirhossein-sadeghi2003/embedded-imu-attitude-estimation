@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-input_path = Path("data/raw/complementary_filter_demo_clean.csv")
+input_path = Path("data/processed/complementary_filter_demo_clean.csv")
 results_dir = Path("results")
 results_dir.mkdir(exist_ok=True)
 
