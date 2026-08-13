@@ -26,19 +26,19 @@ time_ms,accel_x_g,accel_y_g,accel_z_g,gyro_x_dps,gyro_y_dps,gyro_z_dps
 
 During the first test, the sensor was stationary on the desk.
 
-The accelerometer readings were reasonable:
+The accelerometer readings were close to:
 
-- accel_z was approximately 1.01 g
-- accel_x and accel_y were close to 0 g
+- accel_z approximately 1.01 g
+- accel_x and accel_y close to 0 g
 
-This indicates that the sensor is measuring gravity correctly.
+These values are consistent with a stationary, approximately level sensor dominated by gravity.
 
-The gyroscope readings were close to zero but not exactly zero. This is expected because real gyroscopes have small bias and noise even when stationary.
+The gyroscope readings were close to zero but not exactly zero, exposing the small stationary bias and noise handled later by startup calibration.
 
-This test confirms that:
+Observed in this test:
 
-- the MPU6050 is awake and responding
-- raw accelerometer data is being read correctly
-- raw gyroscope data is being read correctly
-- the ESP32 can stream IMU data over Serial
-- the project is ready for roll and pitch estimation
+- the MPU6050 responded to direct register reads
+- accelerometer and gyroscope samples were streamed over Serial
+- the stationary accelerometer pattern was consistent with gravity along the sensor z-axis
+- a small gyroscope bias was visible before calibration
+- these measurements provided the input for the later roll/pitch estimation stages

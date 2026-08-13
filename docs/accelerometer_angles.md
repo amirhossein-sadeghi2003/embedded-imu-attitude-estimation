@@ -50,9 +50,9 @@ The accelerometer-based attitude estimate changed consistently with manual board
 
 ## Interpretation
 
-This test confirms that:
+Observed in this test:
 
-- accelerometer data can be converted into roll and pitch estimates
-- the estimated angles respond consistently to manual board tilting
-- small nonzero angles at rest are expected because of mounting offset and sensor bias
-- the project is ready for gyroscope integration and complementary filtering
+- accelerometer data was converted into roll and pitch estimates
+- the estimated angles responded consistently to manual board tilting
+- small nonzero angles at rest were consistent with mounting offset and sensor bias
+- these accelerometer angles were used as the long-term reference in the later complementary-filter stage

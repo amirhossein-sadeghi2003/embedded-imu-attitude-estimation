@@ -23,14 +23,14 @@ A complementary filter combines both:
 
 During the first test, the complementary filter showed drift because the gyroscope output was not exactly zero while the sensor was stationary.
 
-To fix this, the firmware performs startup calibration:
+The firmware performs startup calibration:
 
 1. Keep the sensor still.
 2. Collect 300 gyroscope samples.
 3. Compute average gyro X and gyro Y bias.
 4. Subtract this bias from future gyro readings.
 
-This reduced the corrected gyroscope values close to zero during stationary tests.
+After startup bias subtraction, the corrected gyroscope values stayed closer to zero during stationary tests.
 
 ## Filter Equation
 
@@ -58,24 +58,21 @@ Typical values:
 - filtered_pitch: about -1.9 to -2.1 degrees
 - corrected gyro values: close to 0 deg/s
 
-This confirms that gyro bias correction improved stability.
-
 ## Tilted Test
 
 When the board was tilted and held still:
 
 - accel_pitch reached about -50 to -53 degrees
-- filtered_pitch followed the tilted orientation at about -55 to -60 degrees
+- filtered_pitch reached about -55 to -60 degrees
 - corrected gyro values returned close to zero after motion stopped
 
-One final sample showed a large gyro_y value during movement, which is expected and indicates the board was being moved at that moment.
+One final sample showed a large gyro_y value during movement, consistent with the board being moved at that moment.
 
 ## Interpretation
 
-This stage confirms that:
+Observed in this stage:
 
-- raw accelerometer and gyroscope readings can be combined
-- gyroscope bias must be handled for stable attitude estimation
-- startup calibration improves complementary filter behavior
-- the filtered estimates respond consistently during the recorded manual tilt tests
-- the project is ready for serial logging and Python-based analysis
+- accelerometer and gyroscope measurements were combined in the roll/pitch estimator
+- startup bias subtraction reduced the stationary gyroscope offset seen in the earlier raw-reading stage
+- the filtered estimates responded consistently during the recorded manual tilt tests
+- the same estimator output was used by the Serial logging and Python analysis stages

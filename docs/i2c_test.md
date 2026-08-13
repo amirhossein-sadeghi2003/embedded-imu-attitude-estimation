@@ -28,7 +28,7 @@ The firmware scans all I2C addresses and reports detected devices over the Seria
 
 ## Result
 
-The MPU6050 was successfully detected at:
+The MPU6050 was detected at:
 
 0x68
 
@@ -42,10 +42,8 @@ Devices found: 1
 
 ## Interpretation
 
-This confirms that:
+The scan established that:
 
-- the MPU6050 soldered header is usable
-- VCC and GND are connected correctly
-- SDA and SCL are connected correctly
-- ESP32 I2C communication is working
-- the IMU is ready for raw accelerometer and gyroscope reading
+- the MPU6050 responded at the expected I2C address
+- the ESP32 could communicate with the device over the configured SDA/SCL bus
+- the wiring and bus connection were sufficient for the subsequent IMU reading tests
