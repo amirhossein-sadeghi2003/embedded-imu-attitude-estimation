@@ -46,13 +46,13 @@ When the board was tilted by hand, the estimated angles changed clearly:
 - roll reached about -44 degrees in the opposite direction
 - pitch also changed during forward/backward motion
 
-This confirms that the accelerometer-based attitude estimate responds correctly to physical orientation changes.
+The accelerometer-based attitude estimate changed consistently with manual board tilting.
 
 ## Interpretation
 
 This test confirms that:
 
 - accelerometer data can be converted into roll and pitch estimates
-- the sensor responds correctly to board orientation
+- the estimated angles respond consistently to manual board tilting
 - small nonzero angles at rest are expected because of mounting offset and sensor bias
 - the project is ready for gyroscope integration and complementary filtering

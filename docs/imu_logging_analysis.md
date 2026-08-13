@@ -23,9 +23,11 @@ The initial logging script is located at:
 
 `scripts/log_imu_demo.py`
 
-It records Serial output from:
+By default it records from `/dev/ttyUSB0`. A different ESP32 serial port can be selected with:
 
-`/dev/ttyUSB0`
+```bash
+python scripts/log_imu_demo.py --port /dev/ttyACM0
+```
 
 The initial log is saved to:
 
@@ -33,7 +35,7 @@ The initial log is saved to:
 
 Clean output:
 
-`data/raw/complementary_filter_demo_clean.csv`
+`data/processed/complementary_filter_demo_clean.csv`
 
 The plotting script is:
 
@@ -73,7 +75,7 @@ A separate high-rate firmware was added for cleaner CSV-style logging:
 
 This firmware outputs:
 
-- reconstructed timestamp information
+- ESP32 millisecond timestamps and the reported filter timestep
 - accelerometer x/y/z values in g
 - accelerometer-only roll and pitch
 - complementary-filter roll and pitch
@@ -89,7 +91,7 @@ Raw high-rate log:
 
 Cleaned high-rate dataset:
 
-`data/raw/high_rate_imu_demo_clean.csv`
+`data/processed/high_rate_imu_demo_clean.csv`
 
 Cleaning script:
 
@@ -113,19 +115,19 @@ The high-rate demo contains:
 
 | Metric | Value |
 |---|---:|
-| Samples | 1909 |
-| Duration | 38.16 s |
-| Mean timestep | 0.020 s |
-| Estimated sampling rate | 50.0 Hz |
+| Samples | 1907 |
+| Capture duration | 39.06 s |
+| Mean reported timestep | 0.020 s |
+| Nominal update rate | 50.0 Hz |
+| Effective logged row rate | 48.80 Hz |
 | Filtered roll range | -43.1° to +48.8° |
 | Filtered pitch range | -67.1° to +64.1° |
-| Mean accel-z | 0.851 g |
 
 ## Cleaning Notes
 
-During high-rate logging, one malformed Serial line was detected and skipped.
+During high-rate logging, one malformed Serial line was skipped. The recorded stream also contained one stray startup timestamp and one isolated corrupted timestamp; these rows are excluded by the cleaner.
 
-The cleaner reconstructs `time_s` from `dt_s` instead of relying only on raw ESP32 `millis()` timestamps. This makes the cleaned dataset more robust to Serial startup artifacts or partial lines.
+The cleaned `time_s` axis is derived from the retained ESP32 timestamps rather than by summing `dt_s`. This preserves the observed gap in the Serial capture instead of compressing it out of the timeline. The reported `dt_s` remains useful for describing the nominal 50 Hz estimator update period.
 
 ## Interpretation
 
@@ -137,4 +139,4 @@ This stage confirms that:
 - high-rate logging provides smoother and denser motion data than the initial human-readable Serial demo
 - the project now includes a complete embedded-data workflow from firmware to dataset to plots
 
-The next hardware-facing improvement is to add an OLED display for live roll/pitch visualization.
+The later OLED/LED hardware stage is documented in `docs/oled_attitude_display.md`.

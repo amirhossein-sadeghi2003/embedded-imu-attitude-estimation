@@ -70,6 +70,8 @@ The status is based on the maximum absolute value of filtered roll and filtered 
 | 10° <= max tilt < 25° | `TILT` | Blue |
 | max tilt >= 25° | `WARNING` | Red |
 
+These thresholds are demonstration values for visual feedback rather than calibrated safety limits.
+
 This makes the attitude estimator easier to understand in a hardware demo: the OLED shows precise numerical values, while the LEDs provide fast status feedback.
 
 ## I2C Scan Result
@@ -131,4 +133,4 @@ It demonstrates:
 - LED-based threshold status indication
 - practical system integration beyond offline Python plots
 
-The next possible improvement is to capture a short hardware demo video showing the OLED values changing as the IMU is tilted.
+Hardware photos and a short OLED/LED demo video are included under `docs/media/`.

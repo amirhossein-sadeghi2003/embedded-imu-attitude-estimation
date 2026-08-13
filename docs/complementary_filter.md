@@ -77,5 +77,5 @@ This stage confirms that:
 - raw accelerometer and gyroscope readings can be combined
 - gyroscope bias must be handled for stable attitude estimation
 - startup calibration improves complementary filter behavior
-- the filter can track real physical board orientation changes
+- the filtered estimates respond consistently during the recorded manual tilt tests
 - the project is ready for serial logging and Python-based analysis

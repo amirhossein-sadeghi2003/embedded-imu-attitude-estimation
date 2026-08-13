@@ -84,6 +84,7 @@ embedded-imu-attitude-estimation/
   - oled_attitude_display.md
 - data/
   - raw/
+  - processed/
 - results/
   - roll_estimation_comparison.png
   - pitch_estimation_comparison.png
@@ -94,16 +95,42 @@ embedded-imu-attitude-estimation/
   - high_rate_corrected_gyro_measurements.png
   - high_rate_accelerometer_measurements.png
   - high_rate_imu_demo_summary.csv
+  - attitude_estimation_visual_overview.png
+  - attitude_body_animation.gif
 - scripts/
   - log_imu_demo.py
   - clean_imu_log.py
   - plot_imu_log.py
   - clean_high_rate_imu_log.py
   - plot_high_rate_imu_log.py
+  - create_visual_overview.py
+  - animate_attitude_body.py
 - README.md
 - requirements.txt
 - .gitignore
 
+## Reproducing the Python Analysis
+
+The analysis environment used for the current results was Python 3.12.7.
+
+```bash
+python -m venv venv
+source venv/bin/activate
+python -m pip install -r requirements.txt
+
+python scripts/clean_imu_log.py
+python scripts/plot_imu_log.py
+
+python scripts/clean_high_rate_imu_log.py
+python scripts/plot_high_rate_imu_log.py
+
+python scripts/create_visual_overview.py
+python scripts/animate_attitude_body.py
+```
+
+Raw captures are kept under `data/raw/`, while cleaned datasets are written to `data/processed/`.
+
+For the embedded firmware, the project uses the ESP32 Arduino core. The OLED stage additionally uses Adafruit GFX and Adafruit SSD1306; I2C communication uses the Arduino `Wire` library.
 
 ## Hardware Bring-Up
 
@@ -151,7 +178,7 @@ Flat-on-desk readings were close to:
 
 When the board was tilted by hand, roll changed clearly from about +44 degrees to about -44 degrees.
 
-This confirms that the ESP32 can compute physical board orientation from real IMU acceleration data.
+The measured roll and pitch changed consistently with manual board tilting during the hardware test.
 
 See:
 
@@ -165,7 +192,7 @@ The fourth hardware test combines accelerometer-based roll/pitch estimates with 
 
 A startup gyroscope calibration step was added because the stationary gyro readings had small bias. After calibration, the corrected gyroscope values stayed close to zero when the board was still.
 
-Stationary test results showed stable filtered roll and pitch estimates. During tilted tests, the filtered pitch estimate followed the physical board orientation.
+Stationary test results showed stable filtered roll and pitch estimates. During manual tilt tests, the filtered pitch estimate responded consistently to the applied motion.
 
 See:
 
@@ -208,7 +235,7 @@ High-rate logging files:
 
 - firmware: `firmware/esp32_mpu6050_high_rate_logger/esp32_mpu6050_high_rate_logger.ino`
 - raw log: `data/raw/high_rate_imu_demo_log.csv`
-- cleaned CSV: `data/raw/high_rate_imu_demo_clean.csv`
+- cleaned CSV: `data/processed/high_rate_imu_demo_clean.csv`
 - cleaning script: `scripts/clean_high_rate_imu_log.py`
 - plotting script: `scripts/plot_high_rate_imu_log.py`
 
@@ -216,13 +243,13 @@ High-rate demo summary:
 
 | Metric | Value |
 |---|---:|
-| Samples | 1909 |
-| Duration | 38.16 s |
-| Mean timestep | 0.020 s |
-| Estimated sampling rate | 50.0 Hz |
+| Samples | 1907 |
+| Capture duration | 39.06 s |
+| Mean reported timestep | 0.020 s |
+| Nominal update rate | 50.0 Hz |
+| Effective logged row rate | 48.80 Hz |
 | Filtered roll range | -43.1° to +48.8° |
 | Filtered pitch range | -67.1° to +64.1° |
-| Mean accel-z | 0.851 g |
 
 This stage made the data easier to analyze because the logger moved from a slower human-readable Serial format to cleaner CSV-style output at about 50 Hz.
 
@@ -254,6 +281,8 @@ The LEDs provide quick visual feedback:
 | `LEVEL` | max tilt < 10° | Green |
 | `TILT` | 10° <= max tilt < 25° | Blue |
 | `WARNING` | max tilt >= 25° | Red |
+
+These thresholds are demonstration logic for the hardware interface, not calibrated safety limits.
 
 Flat-on-desk test result:
 
@@ -361,17 +390,14 @@ The logged demo contains:
 | Filtered pitch range | -90.5° to +71.6° |
 
 
-## Current Status
+## Limitations
 
-This project is portfolio-ready.
-
-Completed work includes hardware bring-up, raw IMU reading, accelerometer-based roll/pitch estimation, complementary filtering, Serial logging, Python analysis, high-rate IMU logging, OLED live attitude display, LED status feedback, and hardware demo media.
-
-The ESP32 successfully detected the MPU6050 at I2C address 0x68 and the OLED display at I2C address 0x3C. It streamed accelerometer/gyroscope measurements over Serial, computed board orientation, combined accelerometer and gyroscope measurements using a complementary filter with startup gyro calibration, generated analysis plots from real IMU logs, and displayed live roll/pitch estimates on the OLED.
-
-The final hardware demo shows live attitude estimation with OLED numerical output and LED threshold-based status feedback.
-
-Future improvements could include a labeled motion dataset, a small classification layer for attitude states, or a comparison with a Kalman filter. These are optional and are not required for the current project narrative.
+- The estimator provides roll and pitch only; yaw is not observable with the MPU6050 alone because there is no magnetometer or other heading reference.
+- No external ground-truth angle sensor was used, so the plots demonstrate estimator behavior rather than absolute orientation accuracy.
+- Accelerometer-based tilt assumes gravity is the dominant acceleration; strong linear motion can disturb the angle estimate.
+- Gyroscope bias is estimated only at startup and may change with temperature or time.
+- The complementary-filter coefficient is fixed at `alpha = 0.98`. Because the early demo and the 50 Hz logger use different update rates, that coefficient does not imply identical time-domain filter behavior in both stages.
+- The OLED/LED attitude thresholds are demonstration values rather than safety or control-system limits.
 
 ## Visual overview
 
